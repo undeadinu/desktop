@@ -182,7 +182,7 @@ import {
   updateChangedFiles,
   updateConflictState,
 } from './updates/changes-state'
-import { AheadBehindCacheEmitter } from './ahead-behind-cache-emitter'
+import { AheadBehindEmitter } from './ahead-behind-emitter'
 
 /**
  * As fast-forwarding local branches is proportional to the number of local
@@ -311,7 +311,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     private readonly pullRequestStore: PullRequestStore,
     private readonly repositoryStateCache: RepositoryStateCache,
     private readonly apiRepositoriesStore: ApiRepositoriesStore,
-    private readonly aheadBehindCacheEmitter: AheadBehindCacheEmitter
+    private readonly aheadBehindCacheEmitter: AheadBehindEmitter
   ) {
     super()
 
