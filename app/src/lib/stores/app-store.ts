@@ -311,7 +311,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
     private readonly pullRequestStore: PullRequestStore,
     private readonly repositoryStateCache: RepositoryStateCache,
     private readonly apiRepositoriesStore: ApiRepositoriesStore,
-    private readonly aheadBehindCacheEmitter: AheadBehindEmitter
+    private readonly aheadBehindEmitter: AheadBehindEmitter
   ) {
     super()
 
@@ -331,7 +331,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       this.onWindowZoomFactorChanged(factor)
     })
 
-    aheadBehindCacheEmitter.onDidUpdate(({ repository, aheadBehindCache }) => {
+    aheadBehindEmitter.onDidUpdate(({ repository, aheadBehindCache }) => {
       this.repositoryStateCache.updateCompareState(repository, () => ({
         aheadBehindCache,
       }))
@@ -623,10 +623,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
       return
     }
 
-    const updater = new AheadBehindUpdater(
-      repository,
-      this.aheadBehindCacheEmitter
-    )
+    const updater = new AheadBehindUpdater(repository, this.aheadBehindEmitter)
 
     this.currentAheadBehindUpdater = updater
 
@@ -861,7 +858,7 @@ export class AppStore extends TypedBaseStore<IAppState> {
           ? currentSha
           : comparisonBranch.tip.sha
 
-      this.aheadBehindCacheEmitter.insertValue({
+      this.aheadBehindEmitter.insertValue({
         from,
         to,
         aheadBehind,
@@ -955,14 +952,14 @@ export class AppStore extends TypedBaseStore<IAppState> {
       const currentBranch = branchesState.tip.branch
       const { defaultBranch, recentBranches, allBranches } = compareState
 
-      this.aheadBehindCacheEmitter.scheduleComparisons({
+      this.aheadBehindEmitter.scheduleComparisons({
         currentBranch,
         defaultBranch,
         recentBranches,
         allBranches,
       })
     } else if (branchListNowHidden) {
-      this.aheadBehindCacheEmitter.pause()
+      this.aheadBehindEmitter.pause()
     }
   }
 
